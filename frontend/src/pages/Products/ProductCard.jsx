@@ -17,42 +17,46 @@ const ProductCard = ({ p }) => {
   };
 
   return (
-    <div className="max-w-sm relative bg-[#1A1A1A] rounded-lg shaodw dark:bg-gray-800 dark:border-gray-700">
-      <section className="relative">
+    <div className="w-full max-w-sm bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-white/10 group relative flex flex-col h-full">
+      <div className="relative overflow-hidden aspect-square">
         <Link to={`/product/${p._id}`}>
-          <span className="absolute bottom-3 right-3 bg-pink-100 text-pink-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-pink-900 dark:text-pink-300">
-            {p?.brand}
-          </span>
           <img
-            className="cursor-pointer w-full"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             src={p.image}
             alt={p.name}
-            style={{ height: "170px", objectFit: "cover" }}
           />
         </Link>
-        <HeartIcon product={p} />
-      </section>
+        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+          <HeartIcon product={p} />
+        </div>
+        <div className="absolute bottom-3 left-3">
+          <span className="bg-black/50 backdrop-blur-md text-white text-xs font-medium px-2.5 py-1 rounded-full border border-white/10">
+            {p?.brand}
+          </span>
+        </div>
+      </div>
 
-      <div className="p-5">
-        <div className="flex justify-between">
-          <h5 className="mb-2 text-xl text-whiet dark:text-white">{p?.name}</h5>
-
-          <p className="text-black font-semibold text-pink-500">
+      <div className="p-5 flex flex-col flex-1">
+        <div className="flex justify-between items-start mb-2">
+          <h5 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+            <Link to={`/product/${p._id}`}>{p?.name}</Link>
+          </h5>
+          <span className="text-lg font-bold text-primary">
             {p?.price?.toLocaleString("en-US", {
               style: "currency",
               currency: "USD",
             })}
-          </p>
+          </span>
         </div>
 
-        <p className="mb-3 font-normal text-[#CFCFCF]">
-          {p?.description?.substring(0, 60)} ...
+        <p className="text-gray-400 text-sm mb-4 line-clamp-2 flex-grow">
+          {p?.description?.substring(0, 60)}...
         </p>
 
-        <section className="flex justify-between items-center">
+        <section className="flex justify-between items-center mt-auto pt-4 border-t border-white/10">
           <Link
             to={`/product/${p._id}`}
-            className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-700 rounded-lg hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800"
+            className="inline-flex items-center text-sm font-medium text-primary hover:text-white transition-colors"
           >
             Read More
             <svg
@@ -73,10 +77,10 @@ const ProductCard = ({ p }) => {
           </Link>
 
           <button
-            className="p-2 rounded-full"
+            className="p-2 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-lg hover:shadow-primary/25"
             onClick={() => addToCartHandler(p, 1)}
           >
-            <AiOutlineShoppingCart size={25} />
+            <AiOutlineShoppingCart size={20} />
           </button>
         </section>
       </div>

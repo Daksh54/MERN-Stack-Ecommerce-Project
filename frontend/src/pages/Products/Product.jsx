@@ -3,24 +3,29 @@ import HeartIcon from "./HeartIcon";
 
 const Product = ({ product }) => {
   return (
-    <div className="w-[30rem] ml-[2rem] p-3 relative">
-      <div className="relative">
+    <div className="w-full bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-white/10 group relative">
+      <div className="relative overflow-hidden aspect-[4/3]">
         <img
           src={product.image}
           alt={product.name}
-          className="w-[30rem] rounded"
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <HeartIcon product={product} />
+        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+          <HeartIcon product={product} />
+        </div>
       </div>
 
       <div className="p-4">
         <Link to={`/product/${product._id}`}>
-          <h2 className="flex justify-between items-center">
-            <div className="text-lg">{product.name}</div>
-            <span className="bg-pink-100 text-pink-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-pink-900 dark:text-pink-300">
-              $ {product.price}
+          <div className="flex justify-between items-start mb-2">
+            <h2 className="text-lg font-bold text-white group-hover:text-primary transition-colors line-clamp-1">{product.name}</h2>
+            <span className="bg-primary/20 text-primary text-xs font-bold px-2 py-1 rounded-full">
+              ${product.price}
             </span>
-          </h2>
+          </div>
+          <p className="text-gray-400 text-sm line-clamp-2 mb-3">
+            {product.description?.substring(0, 60)}...
+          </p>
         </Link>
       </div>
     </div>
