@@ -2,9 +2,19 @@ import User from "../models/userModel.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import createToken from "../utils/createToken.js";
+import {
+  normalizeUserCoffeeProfile,
+  normalizeUserSubscription,
+} from "../utils/coffeeTransforms.js";
 
 const createUser = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  const {
+    username,
+    email,
+    password,
+    coffeeProfile = {},
+    smartSubscription = {},
+  } = req.body;
 
   if (!username || !email || !password) {
     res.status(400);
@@ -19,7 +29,13 @@ const createUser = asyncHandler(async (req, res) => {
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const newUser = new User({ username, email, password: hashedPassword });
+  const newUser = new User({
+    username,
+    email,
+    password: hashedPassword,
+    coffeeProfile: normalizeUserCoffeeProfile(coffeeProfile),
+    smartSubscription: normalizeUserSubscription(smartSubscription),
+  });
 
   try {
     await newUser.save();
@@ -30,6 +46,8 @@ const createUser = asyncHandler(async (req, res) => {
       username: newUser.username,
       email: newUser.email,
       isAdmin: newUser.isAdmin,
+      coffeeProfile: newUser.coffeeProfile,
+      smartSubscription: newUser.smartSubscription,
     });
   } catch (error) {
     res.status(400);
@@ -61,6 +79,8 @@ const loginUser = asyncHandler(async (req, res) => {
         username: existingUser.username,
         email: existingUser.email,
         isAdmin: existingUser.isAdmin,
+        coffeeProfile: existingUser.coffeeProfile,
+        smartSubscription: existingUser.smartSubscription,
       });
       return;
     }
@@ -95,6 +115,8 @@ const getCurrentUserProfile = asyncHandler(async (req, res) => {
       _id: user._id,
       username: user.username,
       email: user.email,
+      coffeeProfile: user.coffeeProfile,
+      smartSubscription: user.smartSubscription,
     });
   } else {
     res.status(404);
@@ -108,6 +130,17 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
   if (user) {
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
+    user.coffeeProfile = normalizeUserCoffeeProfile({
+      ...user.coffeeProfile?.toObject?.(),
+      ...(req.body.coffeeProfile || {}),
+    });
+    user.smartSubscription = {
+      ...user.smartSubscription?.toObject?.(),
+      ...normalizeUserSubscription({
+        ...user.smartSubscription?.toObject?.(),
+        ...(req.body.smartSubscription || {}),
+      }),
+    };
 
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
@@ -122,6 +155,8 @@ const updateCurrentUserProfile = asyncHandler(async (req, res) => {
       username: updatedUser.username,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      coffeeProfile: updatedUser.coffeeProfile,
+      smartSubscription: updatedUser.smartSubscription,
     });
   } else {
     res.status(404);
@@ -164,6 +199,17 @@ const updateUserById = asyncHandler(async (req, res) => {
     user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
     user.isAdmin = Boolean(req.body.isAdmin);
+    user.coffeeProfile = normalizeUserCoffeeProfile({
+      ...user.coffeeProfile?.toObject?.(),
+      ...(req.body.coffeeProfile || {}),
+    });
+    user.smartSubscription = {
+      ...user.smartSubscription?.toObject?.(),
+      ...normalizeUserSubscription({
+        ...user.smartSubscription?.toObject?.(),
+        ...(req.body.smartSubscription || {}),
+      }),
+    };
 
     const updatedUser = await user.save();
 
@@ -172,6 +218,8 @@ const updateUserById = asyncHandler(async (req, res) => {
       username: updatedUser.username,
       email: updatedUser.email,
       isAdmin: updatedUser.isAdmin,
+      coffeeProfile: updatedUser.coffeeProfile,
+      smartSubscription: updatedUser.smartSubscription,
     });
   } else {
     res.status(404);

@@ -1,5 +1,6 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/productModel.js";
+import { normalizeProductPayload } from "../utils/coffeeTransforms.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
@@ -21,7 +22,8 @@ const addProduct = asyncHandler(async (req, res) => {
         return res.json({ error: "Quantity is required" });
     }
 
-    const product = new Product({ ...req.fields });
+    const payload = normalizeProductPayload(req.fields);
+    const product = new Product(payload);
     await product.save();
     res.json(product);
   } catch (error) {
@@ -50,11 +52,10 @@ const updateProductDetails = asyncHandler(async (req, res) => {
         return res.json({ error: "Quantity is required" });
     }
 
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      { ...req.fields },
-      { new: true }
-    );
+    const payload = normalizeProductPayload(req.fields);
+    const product = await Product.findByIdAndUpdate(req.params.id, payload, {
+      new: true,
+    });
 
     await product.save();
 
@@ -89,7 +90,9 @@ const fetchProducts = asyncHandler(async (req, res) => {
       : {};
 
     const count = await Product.countDocuments({ ...keyword });
-    const products = await Product.find({ ...keyword }).limit(pageSize);
+    const products = await Product.find({ ...keyword })
+      .sort({ "pricing.lastRecommendation.demandScore": -1, createdAt: -1 })
+      .limit(pageSize);
 
     res.json({
       products,
@@ -105,7 +108,7 @@ const fetchProducts = asyncHandler(async (req, res) => {
 
 const fetchProductById = asyncHandler(async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate("category");
     if (product) {
       return res.json(product);
     } else {
@@ -123,7 +126,7 @@ const fetchAllProducts = asyncHandler(async (req, res) => {
     const products = await Product.find({})
       .populate("category")
       .limit(12)
-      .sort({ createAt: -1 });
+      .sort({ createdAt: -1 });
 
     res.json(products);
   } catch (error) {

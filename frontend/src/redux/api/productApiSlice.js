@@ -88,6 +88,13 @@ export const productApiSlice = apiSlice.injectEndpoints({
         body: { checked, radio },
       }),
     }),
+
+    trackProductView: builder.mutation({
+      query: (productId) => ({
+        url: `${PRODUCT_URL}/${productId}/track-view`,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
@@ -104,4 +111,5 @@ export const {
   useGetNewProductsQuery,
   useUploadProductImageMutation,
   useGetFilteredProductsQuery,
+  useTrackProductViewMutation,
 } = productApiSlice;

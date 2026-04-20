@@ -15,6 +15,7 @@ import {
   fetchNewProducts,
   filterProducts,
 } from "../controllers/productController.js";
+import { trackProductView } from "../controllers/intelligenceController.js";
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 import checkId from "../middlewares/checkId.js";
 
@@ -25,6 +26,7 @@ router
 
 router.route("/allproducts").get(fetchAllProducts);
 router.route("/:id/reviews").post(authenticate, checkId, addProductReview);
+router.route("/:id/track-view").post(checkId, trackProductView);
 
 router.get("/top", fetchTopProducts);
 router.get("/new", fetchNewProducts);

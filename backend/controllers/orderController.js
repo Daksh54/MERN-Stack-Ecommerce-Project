@@ -1,5 +1,7 @@
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
+import { refreshDynamicPricing, upsertDailySignal } from "../services/pricingEngineService.js";
+import { scheduleSmartSubscriptionForOrder } from "../services/subscriptionService.js";
 
 // Utility Function
 function calcPrices(orderItems) {
@@ -162,6 +164,7 @@ const markOrderAsPaid = async (req, res) => {
     const order = await Order.findById(req.params.id);
 
     if (order) {
+      const wasAlreadyPaid = order.isPaid;
       order.isPaid = true;
       order.paidAt = Date.now();
       order.paymentResult = {
@@ -172,6 +175,36 @@ const markOrderAsPaid = async (req, res) => {
       };
 
       const updateOrder = await order.save();
+
+      if (!wasAlreadyPaid) {
+        const productIds = [];
+
+        for (const item of order.orderItems) {
+          const product = await Product.findById(item.product);
+
+          if (!product) {
+            continue;
+          }
+
+          product.countInStock = Math.max(0, product.countInStock - item.qty);
+          product.quantity += item.qty;
+          product.analytics.totalUnitsSold += item.qty;
+          product.analytics.lastPurchasedAt = new Date();
+          upsertDailySignal(product, {
+            unitsSold: item.qty,
+            revenue: item.price * item.qty,
+          });
+          await product.save();
+          productIds.push(product._id);
+        }
+
+        if (productIds.length) {
+          await refreshDynamicPricing({ productIds, persistPrice: true });
+        }
+
+        await scheduleSmartSubscriptionForOrder(order.user, order._id);
+      }
+
       res.status(200).json(updateOrder);
     } else {
       res.status(404);

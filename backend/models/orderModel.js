@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
 
+const smartSubscriptionCartItemSchema = mongoose.Schema(
+  {
+    product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+    name: String,
+    qty: Number,
+    reason: String,
+  },
+  { _id: false }
+);
+
 const orderSchema = mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, required: true, ref: "User" },
@@ -78,6 +88,25 @@ const orderSchema = mongoose.Schema(
 
     deliveredAt: {
       type: Date,
+    },
+
+    consumptionForecast: {
+      estimatedDailyGrams: { type: Number, default: 0 },
+      estimatedDaysRemaining: { type: Number, default: 0 },
+      estimatedRunOutDate: Date,
+      reminderScheduledFor: Date,
+    },
+
+    smartSubscription: {
+      status: {
+        type: String,
+        default: "inactive",
+        enum: ["inactive", "scheduled", "notified"],
+      },
+      prefilledCart: {
+        type: [smartSubscriptionCartItemSchema],
+        default: [],
+      },
     },
   },
   {

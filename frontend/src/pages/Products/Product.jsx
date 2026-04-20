@@ -3,27 +3,34 @@ import HeartIcon from "./HeartIcon";
 
 const Product = ({ product }) => {
   return (
-    <div className="w-full bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-white/10 group relative">
-      <div className="relative overflow-hidden aspect-[4/3]">
+    <div className="group relative w-full overflow-hidden rounded-xl border border-white/10 bg-card shadow-lg transition-all duration-300 hover:shadow-2xl">
+      <div className="relative aspect-[4/3] overflow-hidden">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute right-3 top-3 opacity-0 transition-opacity group-hover:opacity-100">
           <HeartIcon product={product} />
         </div>
       </div>
 
       <div className="p-4">
         <Link to={`/product/${product._id}`}>
-          <div className="flex justify-between items-start mb-2">
-            <h2 className="text-lg font-bold text-white group-hover:text-primary transition-colors line-clamp-1">{product.name}</h2>
-            <span className="bg-primary/20 text-primary text-xs font-bold px-2 py-1 rounded-full">
+          <div className="mb-2 flex items-start justify-between">
+            <h2 className="line-clamp-1 text-lg font-bold text-white transition-colors group-hover:text-primary">
+              {product.name}
+            </h2>
+            <span className="rounded-full bg-primary/20 px-2 py-1 text-xs font-bold text-primary">
               ${product.price}
             </span>
           </div>
-          <p className="text-gray-400 text-sm line-clamp-2 mb-3">
+          <div className="mb-3 flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.15em] text-stone-400">
+            {product.beanProfile?.origin ? <span>{product.beanProfile.origin}</span> : null}
+            {product.beanProfile?.roastLevel ? <span>{product.beanProfile.roastLevel}</span> : null}
+            {product.productType ? <span>{product.productType}</span> : null}
+          </div>
+          <p className="mb-3 line-clamp-2 text-sm text-gray-400">
             {product.description?.substring(0, 60)}...
           </p>
         </Link>

@@ -14,6 +14,8 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import intelligenceRoutes from "./routes/intelligenceRoutes.js";
+import { startIntelligenceWorker } from "./services/intelligenceWorker.js";
 
 dotenv.config();
 const port = process.env.PORT || 5000;
@@ -78,6 +80,7 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/intelligence", intelligenceRoutes);
 
 app.get("/api/config/paypal", (req, res) => {
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
@@ -96,6 +99,7 @@ if (process.env.NODE_ENV === "production") {
 const startServer = async () => {
   try {
     await connectDB();
+    startIntelligenceWorker();
     app.listen(port, () => console.log(`Server running on port: ${port}`));
   } catch (error) {
     console.error(`Failed to start server: ${error.message}`);
