@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  chatWithConcierge,
   getAdminIntelligenceDashboard,
   getPersonalizedMatches,
   getPricingInsight,
@@ -13,6 +14,7 @@ const router = express.Router();
 router.get("/recommendations", authenticate, getPersonalizedMatches);
 router.get("/subscription-plan", authenticate, getSubscriptionPlan);
 router.get("/products/:id/pricing-insight", getPricingInsight);
+router.post("/concierge", chatWithConcierge);
 router.get("/dashboard", authenticate, authorizeAdmin, getAdminIntelligenceDashboard);
 router.post("/pricing/run", authenticate, authorizeAdmin, runPricingEngine);
 

@@ -20,7 +20,7 @@ const importData = async () => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash("123456", salt);
 
-    const users = await User.insertMany([
+    await User.insertMany([
       {
         username: "Admin User",
         email: "admin@example.com",
@@ -33,6 +33,7 @@ const importData = async () => {
           beanPreference: "single-origin arabica",
           flavorNotes: ["citrus", "chocolate"],
           preferredOrigins: ["ethiopia", "colombia"],
+          preferredEquipment: ["espresso machine", "grinder"],
           dailyCups: 3,
         },
         smartSubscription: {
@@ -52,6 +53,7 @@ const importData = async () => {
           beanPreference: "floral arabica",
           flavorNotes: ["berry", "floral"],
           preferredOrigins: ["ethiopia", "kenya"],
+          preferredEquipment: ["aeropress", "dripper"],
           dailyCups: 2,
         },
         smartSubscription: {
@@ -61,23 +63,20 @@ const importData = async () => {
       },
     ]);
 
-    console.log("Users Imported!");
-
     const categories = await Category.insertMany([
-      { name: "Single Origin" },
-      { name: "Espresso Gear" },
-      { name: "Brewing Equipment" },
+      { name: "Single Origin Beans" },
+      { name: "Coffee Machines" },
+      { name: "Manual Brew Gear" },
+      { name: "Subscriptions & Bundles" },
     ]);
-
-    console.log("Categories Imported!");
 
     const products = [
       {
-        name: "Ethiopian Guji Bloom",
+        name: "Ethiopian Guji Bloom Arabica",
         image:
           "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1000&auto=format&fit=crop",
         description:
-          "Washed Ethiopian Arabica with jasmine aromatics, bergamot brightness, and a tea-like finish.",
+          "Washed Ethiopian arabica with jasmine aromatics, bergamot brightness, and a tea-like finish built for pour-over clarity.",
         brand: "RoastFlow Reserve",
         category: categories[0]._id,
         productType: "beans",
@@ -98,6 +97,10 @@ const importData = async () => {
           recommendedBrewingMethods: ["pour-over", "aeropress"],
           gramsPerBag: 250,
         },
+        marketing: {
+          subscriptionEligible: true,
+          featuredHeadline: "A floral arabica roast designed for vibrant filter coffee and AeroPress cups.",
+        },
         interactiveModel: {
           enabled: true,
           modelType: "coffee-bag",
@@ -105,6 +108,45 @@ const importData = async () => {
           hotspots: [
             { id: "1", label: "Valve", description: "One-way valve keeps aromatics intact." },
             { id: "2", label: "Roast Card", description: "Shows harvest and roast details." },
+          ],
+        },
+      },
+      {
+        name: "India Monsoon Robusta Crema",
+        image:
+          "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1000&auto=format&fit=crop",
+        description:
+          "A bold robusta-forward bag with molasses body, dark cacao, and a dense crema profile for espresso and moka pot brewing.",
+        brand: "RoastFlow Reserve",
+        category: categories[0]._id,
+        productType: "beans",
+        price: 17.5,
+        countInStock: 20,
+        rating: 4.7,
+        numReviews: 12,
+        quantity: 35,
+        beanProfile: {
+          origin: "India",
+          region: "Malabar",
+          species: "robusta",
+          roastLevel: "medium-dark",
+          acidity: 2,
+          body: 5,
+          processingMethod: "monsooned",
+          tastingNotes: ["dark cacao", "molasses", "walnut"],
+          recommendedBrewingMethods: ["espresso", "moka pot"],
+          gramsPerBag: 500,
+        },
+        marketing: {
+          subscriptionEligible: true,
+          featuredHeadline: "Robusta beans built for crema-heavy espresso lovers and full-bodied milk drinks.",
+        },
+        interactiveModel: {
+          enabled: true,
+          modelType: "coffee-bag",
+          accentColor: "#7c4a2d",
+          hotspots: [
+            { id: "1", label: "Bag Profile", description: "Built around crema, body, and chocolate depth." },
           ],
         },
       },
@@ -134,6 +176,10 @@ const importData = async () => {
           recommendedBrewingMethods: ["espresso", "moka pot"],
           gramsPerBag: 500,
         },
+        marketing: {
+          subscriptionEligible: true,
+          featuredHeadline: "A syrupy espresso roast tuned for straight shots and flat whites.",
+        },
         interactiveModel: {
           enabled: true,
           modelType: "coffee-bag",
@@ -148,7 +194,7 @@ const importData = async () => {
         image:
           "https://images.unsplash.com/photo-1556911220-bda9f7f7597e?q=80&w=1000&auto=format&fit=crop",
         description:
-          "A statement espresso machine with manual pressure control, polished metalwork, and café-grade temperature stability.",
+          "A statement espresso machine with manual pressure control, polished metalwork, and cafe-grade temperature stability.",
         brand: "Forge Brew",
         category: categories[1]._id,
         productType: "equipment",
@@ -162,6 +208,10 @@ const importData = async () => {
           material: "copper and stainless steel",
           supportedBrewingMethods: ["espresso"],
         },
+        marketing: {
+          subscriptionEligible: false,
+          featuredHeadline: "An espresso machine centerpiece for serious home baristas.",
+        },
         interactiveModel: {
           enabled: true,
           modelType: "espresso-machine",
@@ -169,6 +219,38 @@ const importData = async () => {
           hotspots: [
             { id: "1", label: "Steam Wand", description: "For textured milk and microfoam." },
             { id: "2", label: "Pressure Gauge", description: "Monitors extraction pressure in real time." },
+          ],
+        },
+      },
+      {
+        name: "AeroPress Travel Brewer",
+        image:
+          "https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=1000&auto=format&fit=crop",
+        description:
+          "A compact AeroPress-style brewer for sweet, clean cups at home, in the office, or on the road.",
+        brand: "Field Brew",
+        category: categories[2]._id,
+        productType: "equipment",
+        price: 44,
+        countInStock: 16,
+        rating: 4.8,
+        numReviews: 10,
+        quantity: 23,
+        equipmentProfile: {
+          equipmentType: "aeropress",
+          material: "polycarbonate",
+          supportedBrewingMethods: ["aeropress"],
+        },
+        marketing: {
+          subscriptionEligible: false,
+          featuredHeadline: "The easiest way to unlock bright cups from your arabica beans anywhere.",
+        },
+        interactiveModel: {
+          enabled: true,
+          modelType: "dripper",
+          accentColor: "#9a633a",
+          hotspots: [
+            { id: "1", label: "Chamber", description: "Designed for fast immersion and easy cleanup." },
           ],
         },
       },
@@ -191,6 +273,10 @@ const importData = async () => {
           material: "anodized aluminum",
           supportedBrewingMethods: ["espresso", "pour-over", "aeropress"],
         },
+        marketing: {
+          subscriptionEligible: false,
+          featuredHeadline: "A precision grinder for espresso shots and filter brews alike.",
+        },
         interactiveModel: {
           enabled: true,
           modelType: "manual-grinder",
@@ -202,41 +288,13 @@ const importData = async () => {
         },
       },
       {
-        name: "Crystal Bloom Dripper",
-        image:
-          "https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=1000&auto=format&fit=crop",
-        description:
-          "Glass dripper built for high-clarity cups and precise bloom control on single-origin coffees.",
-        brand: "Glassline",
-        category: categories[2]._id,
-        productType: "equipment",
-        price: 42,
-        countInStock: 20,
-        rating: 4.6,
-        numReviews: 8,
-        quantity: 31,
-        equipmentProfile: {
-          equipmentType: "dripper",
-          material: "borosilicate glass",
-          supportedBrewingMethods: ["pour-over"],
-        },
-        interactiveModel: {
-          enabled: true,
-          modelType: "dripper",
-          accentColor: "#f59e0b",
-          hotspots: [
-            { id: "1", label: "Ribs", description: "Promote airflow for even extraction." },
-          ],
-        },
-      },
-      {
         name: "Weekend Flight Subscription",
         image:
           "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1000&auto=format&fit=crop",
         description:
           "A rotating subscription of two curated 250g bags matched to your brew style and taste profile every cycle.",
         brand: "RoastFlow Reserve",
-        category: categories[0]._id,
+        category: categories[3]._id,
         productType: "subscription",
         price: 36,
         countInStock: 999,
@@ -257,14 +315,14 @@ const importData = async () => {
         },
         marketing: {
           subscriptionEligible: true,
-          featuredHeadline: "Rotating bags matched to your evolving palate",
+          featuredHeadline: "Rotating bags matched to your evolving palate and brewing setup.",
         },
       },
     ];
 
     await Product.insertMany(products);
 
-    console.log("Data Imported!");
+    console.log("Coffee roastery seed data imported!");
     process.exit();
   } catch (error) {
     console.error(`${error}`);

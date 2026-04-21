@@ -2,6 +2,7 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/productModel.js";
 import { refreshDynamicPricing, upsertDailySignal } from "../services/pricingEngineService.js";
 import { getPersonalizedRecommendations } from "../services/recommendationService.js";
+import { getConciergeResponse } from "../services/conciergeService.js";
 import {
   getSmartSubscriptionPlan,
   getSubscriptionQueueSnapshot,
@@ -46,6 +47,23 @@ const getPricingInsight = asyncHandler(async (req, res) => {
   }
 
   res.json(product.pricing?.lastRecommendation || {});
+});
+
+const chatWithConcierge = asyncHandler(async (req, res) => {
+  const { message, preferences = {}, history = [] } = req.body || {};
+
+  if (!message || !String(message).trim()) {
+    res.status(400);
+    throw new Error("A message is required for concierge chat.");
+  }
+
+  const response = await getConciergeResponse({
+    message: String(message).trim(),
+    preferences,
+    history: Array.isArray(history) ? history : [],
+  });
+
+  res.json(response);
 });
 
 const getSubscriptionPlan = asyncHandler(async (req, res) => {
@@ -93,6 +111,7 @@ export {
   getAdminIntelligenceDashboard,
   getPersonalizedMatches,
   getPricingInsight,
+  chatWithConcierge,
   getSubscriptionPlan,
   runPricingEngine,
   trackProductView,

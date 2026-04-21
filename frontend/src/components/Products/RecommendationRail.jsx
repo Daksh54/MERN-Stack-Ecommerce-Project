@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import CoffeeProductImage from "./CoffeeProductImage";
 
 const RecommendationRail = ({ data = [], title = "Flavor Matches" }) => {
   if (!data.length) {
@@ -8,7 +9,7 @@ const RecommendationRail = ({ data = [], title = "Flavor Matches" }) => {
   return (
     <div className="rounded-3xl border border-white/10 bg-[#120d09] p-5">
       <div className="mb-5">
-        <h3 className="text-xl font-semibold text-white">{title}</h3>
+        <h3 className="text-2xl font-heading text-white">{title}</h3>
         <p className="mt-1 text-sm text-stone-400">
           Personalized by the flavor matcher using your brew habits and taste preferences.
         </p>
@@ -22,10 +23,10 @@ const RecommendationRail = ({ data = [], title = "Flavor Matches" }) => {
             className="rounded-2xl border border-white/10 bg-black/20 p-4 transition hover:-translate-y-1 hover:border-amber-400/20"
           >
             <div className="mb-3 flex items-center gap-3">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="h-16 w-16 rounded-xl object-cover"
+              <CoffeeProductImage
+                product={product}
+                className="h-16 w-16 rounded-xl"
+                imageClassName="rounded-xl"
               />
               <div>
                 <h4 className="font-semibold text-white">{product.name}</h4>

@@ -26,10 +26,18 @@ export const intelligenceApiSlice = apiSlice.injectEndpoints({
         body: payload,
       }),
     }),
+    conciergeChat: builder.mutation({
+      query: (payload) => ({
+        url: `${INTELLIGENCE_URL}/concierge`,
+        method: "POST",
+        body: payload,
+      }),
+    }),
   }),
 });
 
 export const {
+  useConciergeChatMutation,
   useGetIntelligenceDashboardQuery,
   useGetPersonalizedRecommendationsQuery,
   useGetPricingInsightQuery,

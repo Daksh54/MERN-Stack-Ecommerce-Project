@@ -16,6 +16,7 @@ import ProductTabs from "./ProductTabs";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 import ProductModelViewer from "../../components/Products/ProductModelViewer";
 import RecommendationRail from "../../components/Products/RecommendationRail";
+import CoffeeProductImage from "../../components/Products/CoffeeProductImage";
 import {
   useGetPersonalizedRecommendationsQuery,
   useGetPricingInsightQuery,
@@ -81,7 +82,7 @@ const ProductDetails = () => {
       <div className="mb-6">
         <Link
           to="/"
-          className="flex items-center gap-2 text-gray-400 transition-colors hover:text-white"
+          className="flex items-center gap-2 text-stone-400 transition-colors hover:text-white"
         >
           &larr; Back to the coffee shelf
         </Link>
@@ -93,13 +94,13 @@ const ProductDetails = () => {
         <Message variant="danger">{error?.data?.message || error.message}</Message>
       ) : (
         <div className="space-y-10">
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-12 xl:grid-cols-[0.95fr,1.05fr]">
             <div className="relative">
-              <div className="aspect-square overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="h-full w-full object-cover"
+              <div className="overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl">
+                <CoffeeProductImage
+                  product={product}
+                  className="aspect-square"
+                  imageClassName="h-full w-full object-cover"
                 />
               </div>
               <div className="absolute right-4 top-4 rounded-full bg-white/10 p-2 backdrop-blur-md">
@@ -107,10 +108,13 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            <div className="flex flex-col space-y-6">
+            <div className="coffee-panel flex flex-col space-y-6 p-7">
               <div>
-                <h1 className="mb-2 text-4xl font-heading font-bold text-white">{product.name}</h1>
-                <div className="flex items-center gap-4 text-sm text-gray-400">
+                <div className="eyebrow">Coffee Detail</div>
+                <h1 className="mb-2 mt-3 text-4xl font-heading font-bold text-white">
+                  {product.name}
+                </h1>
+                <div className="flex items-center gap-4 text-sm text-stone-400">
                   <span className="flex items-center">
                     <FaStore className="mr-1" /> {product.brand}
                   </span>
@@ -137,7 +141,7 @@ const ProductDetails = () => {
                 ) : null}
               </div>
 
-              <p className="text-lg leading-relaxed text-gray-300">{product.description}</p>
+              <p className="text-lg leading-relaxed text-stone-300">{product.description}</p>
 
               <div className="flex flex-wrap items-end gap-4">
                 <div className="text-5xl font-bold text-primary">${product.price}</div>
@@ -162,19 +166,19 @@ const ProductDetails = () => {
               ) : null}
 
               <div className="grid grid-cols-2 gap-4 border-y border-white/10 py-6">
-                <div className="flex items-center gap-2 text-gray-300">
+                <div className="flex items-center gap-2 text-stone-300">
                   <FaClock className="text-primary" />
                   <span>Added {moment(product.createdAt).fromNow()}</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-300">
+                <div className="flex items-center gap-2 text-stone-300">
                   <FaBox className="text-primary" />
                   <span>{product.countInStock > 0 ? "In Stock" : "Out of Stock"}</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-300">
+                <div className="flex items-center gap-2 text-stone-300">
                   <FaShoppingCart className="text-primary" />
                   <span>Sold: {product.quantity}</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-300">
+                <div className="flex items-center gap-2 text-stone-300">
                   <FaStore className="text-primary" />
                   <span>Forecast: {Math.round(pricingInsight?.forecastDemand || 0)} units</span>
                 </div>
@@ -217,6 +221,16 @@ const ProductDetails = () => {
                 </div>
               </div>
 
+              <div className="rounded-2xl border border-amber-300/10 bg-amber-500/5 p-5">
+                <div className="text-sm uppercase tracking-[0.28em] text-amber-200/70">
+                  Roastery Notes
+                </div>
+                <p className="mt-3 text-sm leading-7 text-stone-300">
+                  {product.marketing?.featuredHeadline ||
+                    "Built for shoppers who want a coffee-forward product page with roast data, brewing guidance, and a clean add-to-cart path."}
+                </p>
+              </div>
+
               {product.countInStock > 0 && (
                 <div className="flex flex-col gap-4 sm:flex-row">
                   <select
@@ -233,7 +247,7 @@ const ProductDetails = () => {
 
                   <button
                     onClick={addToCartHandler}
-                    className="flex-1 rounded-lg bg-primary px-8 py-3 font-bold text-white shadow-lg shadow-primary/25 transition-all hover:bg-primary/90"
+                    className="flex-1 rounded-lg bg-primary px-8 py-3 font-bold text-stone-950 shadow-lg shadow-primary/25 transition-all hover:bg-[#dfa15d]"
                   >
                     Add To Brew Cart
                   </button>
@@ -292,6 +306,7 @@ const ProductDetails = () => {
             data={(recommendationData?.recommendations || []).filter(
               (entry) => entry._id !== product._id
             )}
+            title="More matches from the roastery"
           />
         </div>
       )}

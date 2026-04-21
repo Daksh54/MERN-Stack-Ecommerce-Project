@@ -17,8 +17,8 @@ export default {
         border: "var(--border)",
       },
       fontFamily: {
-        sans: ["Outfit", "Inter", "sans-serif"],
-        heading: ["Playfair Display", "serif"],
+        sans: ["Manrope", "sans-serif"],
+        heading: ["Fraunces", "serif"],
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-out forwards",

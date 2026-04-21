@@ -5,23 +5,21 @@ import { useDispatch, useSelector } from "react-redux";
 import Message from "../../components/Message";
 import ProgressSteps from "../../components/ProgressSteps";
 import Loader from "../../components/Loader";
+import CoffeeProductImage from "../../components/Products/CoffeeProductImage";
 import { useCreateOrderMutation } from "../../redux/api/orderApiSlice";
 import { clearCartItems } from "../../redux/features/cart/cartSlice";
 
 const PlaceOrder = () => {
   const navigate = useNavigate();
-
   const cart = useSelector((state) => state.cart);
-
   const [createOrder, { isLoading, error }] = useCreateOrderMutation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!cart.shippingAddress.address) {
       navigate("/shipping");
     }
   }, [cart.paymentMethod, cart.shippingAddress.address, navigate]);
-
-  const dispatch = useDispatch();
 
   const placeOrderHandler = async () => {
     try {
@@ -36,8 +34,8 @@ const PlaceOrder = () => {
       }).unwrap();
       dispatch(clearCartItems());
       navigate(`/order/${res._id}`);
-    } catch (error) {
-      toast.error(error);
+    } catch (submitError) {
+      toast.error(submitError);
     }
   };
 
@@ -45,41 +43,41 @@ const PlaceOrder = () => {
     <>
       <ProgressSteps step1 step2 step3 />
 
-      <div className="container mx-auto mt-8">
+      <div className="container mx-auto space-y-8 px-4 pb-16">
         {cart.cartItems.length === 0 ? (
           <Message>Your cart is empty</Message>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="coffee-panel overflow-x-auto p-6">
             <table className="w-full border-collapse">
               <thead>
-                <tr>
-                  <td className="px-1 py-2 text-left align-top">Image</td>
-                  <td className="px-1 py-2 text-left">Product</td>
-                  <td className="px-1 py-2 text-left">Quantity</td>
-                  <td className="px-1 py-2 text-left">Price</td>
-                  <td className="px-1 py-2 text-left">Total</td>
+                <tr className="border-b border-white/10 text-left text-sm uppercase tracking-[0.2em] text-stone-500">
+                  <td className="px-1 py-3 align-top">Image</td>
+                  <td className="px-1 py-3">Product</td>
+                  <td className="px-1 py-3">Quantity</td>
+                  <td className="px-1 py-3">Price</td>
+                  <td className="px-1 py-3">Total</td>
                 </tr>
               </thead>
 
               <tbody>
                 {cart.cartItems.map((item, index) => (
-                  <tr key={index}>
-                    <td className="p-2">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-16 h-16 object-cover"
+                  <tr key={index} className="border-b border-white/5">
+                    <td className="p-3">
+                      <CoffeeProductImage
+                        product={item}
+                        className="h-16 w-16 rounded-2xl"
+                        imageClassName="rounded-2xl"
                       />
                     </td>
 
-                    <td className="p-2">
-                      <Link to={`/product/${item.product}`}>{item.name}</Link>
+                    <td className="p-3">
+                      <Link to={`/product/${item.product}`} className="text-white">
+                        {item.name}
+                      </Link>
                     </td>
-                    <td className="p-2">{item.qty}</td>
-                    <td className="p-2">{item.price.toFixed(2)}</td>
-                    <td className="p-2">
-                      $ {(item.qty * item.price).toFixed(2)}
-                    </td>
+                    <td className="p-3 text-stone-300">{item.qty}</td>
+                    <td className="p-3 text-stone-300">{item.price.toFixed(2)}</td>
+                    <td className="p-3 text-stone-300">$ {(item.qty * item.price).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -87,48 +85,40 @@ const PlaceOrder = () => {
           </div>
         )}
 
-        <div className="mt-8">
-          <h2 className="text-2xl font-semibold mb-5">Order Summary</h2>
-          <div className="flex justify-between flex-wrap p-8 bg-[#181818]">
-            <ul className="text-lg">
-              <li>
-                <span className="font-semibold mb-4">Items:</span> $
-                {cart.itemsPrice}
-              </li>
-              <li>
-                <span className="font-semibold mb-4">Shipping:</span> $
-                {cart.shippingPrice}
-              </li>
-              <li>
-                <span className="font-semibold mb-4">Tax:</span> $
-                {cart.taxPrice}
-              </li>
-              <li>
-                <span className="font-semibold mb-4">Total:</span> $
-                {cart.totalPrice}
-              </li>
-            </ul>
+        <div className="coffee-panel p-8">
+          <h2 className="text-3xl font-heading text-white">Order Summary</h2>
+          <div className="mt-6 grid gap-6 lg:grid-cols-3">
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
+              <h3 className="text-xl font-semibold text-white">Totals</h3>
+              <ul className="mt-4 space-y-3 text-stone-300">
+                <li>Items: ${cart.itemsPrice}</li>
+                <li>Shipping: ${cart.shippingPrice}</li>
+                <li>Tax: ${cart.taxPrice}</li>
+                <li>Total: ${cart.totalPrice}</li>
+              </ul>
+            </div>
 
             {error && <Message variant="danger">{error.data.message}</Message>}
 
-            <div>
-              <h2 className="text-2xl font-semibold mb-4">Shipping</h2>
-              <p>
-                <strong>Address:</strong> {cart.shippingAddress.address},{" "}
-                {cart.shippingAddress.city} {cart.shippingAddress.postalCode},{" "}
-                {cart.shippingAddress.country}
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
+              <h3 className="text-xl font-semibold text-white">Shipping</h3>
+              <p className="mt-4 text-stone-300">
+                <strong>Address:</strong> {cart.shippingAddress.address}, {cart.shippingAddress.city}{" "}
+                {cart.shippingAddress.postalCode}, {cart.shippingAddress.country}
               </p>
             </div>
 
-            <div>
-              <h2 className="text-2xl font-semibold mb-4">Payment Method</h2>
-              <strong>Method:</strong> {cart.paymentMethod}
+            <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
+              <h3 className="text-xl font-semibold text-white">Payment Method</h3>
+              <p className="mt-4 text-stone-300">
+                <strong>Method:</strong> {cart.paymentMethod}
+              </p>
             </div>
           </div>
 
           <button
             type="button"
-            className="bg-pink-500 text-white py-2 px-4 rounded-full text-lg w-full mt-4"
+            className="mt-6 w-full rounded-full bg-primary px-4 py-3 text-lg font-semibold text-stone-950 transition hover:bg-[#dfa15d]"
             disabled={cart.cartItems === 0}
             onClick={placeOrderHandler}
           >

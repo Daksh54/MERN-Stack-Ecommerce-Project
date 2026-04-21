@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
 import { addToCart, removeFromCart } from "../redux/features/cart/cartSlice";
+import CoffeeProductImage from "../components/Products/CoffeeProductImage";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -23,45 +24,48 @@ const Cart = () => {
   };
 
   return (
-    <>
-      <div className="container flex justify-around items-start flex wrap mx-auto mt-8">
+    <div className="container mx-auto px-4 pb-16">
+      <div className="grid gap-8 xl:grid-cols-[1.2fr,0.8fr]">
         {cartItems.length === 0 ? (
-          <div>
-            Your cart is empty <Link to="/shop">Go To Shop</Link>
+          <div className="coffee-panel p-8 text-stone-300">
+            Your Arabica bean, expresso machine, robusta bean etc. is empty.{" "}
+            <Link to="/shop" className="text-primary">
+              Explore the shop
+            </Link>
           </div>
         ) : (
           <>
-            <div className="flex flex-col w-[80%]">
-              <h1 className="text-2xl font-semibold mb-4">Shopping Cart</h1>
+            <div className="coffee-panel p-6">
+              <div className="eyebrow">Arabica bean, expresso machine, robusta bean etc.</div>
+              <h1 className="mb-6 mt-3 text-4xl font-heading text-white">Arabica bean, expresso machine, robusta bean etc.</h1>
 
               {cartItems.map((item) => (
-                <div key={item._id} className="flex items-enter mb-[1rem] pb-2">
-                  <div className="w-[5rem] h-[5rem]">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover rounded"
+                <div
+                  key={item._id}
+                  className="mb-4 flex flex-wrap items-center gap-4 rounded-[1.6rem] border border-white/10 bg-black/20 p-4"
+                >
+                  <div className="h-20 w-20">
+                    <CoffeeProductImage
+                      product={item}
+                      className="h-full w-full rounded-2xl"
+                      imageClassName="rounded-2xl"
                     />
                   </div>
 
-                  <div className="flex-1 ml-4">
-                    <Link to={`/product/${item._id}`} className="text-pink-500">
+                  <div className="ml-4 flex-1">
+                    <Link to={`/product/${item._id}`} className="text-lg font-semibold text-white">
                       {item.name}
                     </Link>
 
-                    <div className="mt-2 text-white">{item.brand}</div>
-                    <div className="mt-2 text-white font-bold">
-                      $ {item.price}
-                    </div>
+                    <div className="mt-2 text-stone-400">{item.brand}</div>
+                    <div className="mt-2 font-bold text-primary">$ {item.price}</div>
                   </div>
 
                   <div className="w-24">
                     <select
-                      className="w-full p-1 border rounded text-black"
+                      className="w-full rounded-xl border border-white/10 bg-[#1d1410] p-2 text-white"
                       value={item.qty}
-                      onChange={(e) =>
-                        addToCartHandler(item, Number(e.target.value))
-                      }
+                      onChange={(e) => addToCartHandler(item, Number(e.target.value))}
                     >
                       {[...Array(item.countInStock).keys()].map((x) => (
                         <option key={x + 1} value={x + 1}>
@@ -73,42 +77,50 @@ const Cart = () => {
 
                   <div>
                     <button
-                      className="text-red-500 mr-[5rem]"
+                      className="rounded-full border border-white/10 p-3 text-red-400 transition hover:bg-white/5"
                       onClick={() => removeFromCartHandler(item._id)}
                     >
-                      <FaTrash className="ml-[1rem] mt-[.5rem]" />
+                      <FaTrash />
                     </button>
                   </div>
                 </div>
               ))}
+            </div>
 
-              <div className="mt-8 w-[40rem]">
-                <div className="p-4 rounded-lg">
-                  <h2 className="text-xl font-semibold mb-2">
-                    Items ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
-                  </h2>
-
-                  <div className="text-2xl font-bold">
-                    ${" "}
+            <div className="coffee-panel h-fit p-6">
+              <div className="eyebrow">Summary</div>
+              <h2 className="mt-3 text-3xl font-heading text-white">Order totals</h2>
+              <div className="mt-6 space-y-4 text-stone-300">
+                <div className="flex items-center justify-between">
+                  <span>Items</span>
+                  <span>{cartItems.reduce((acc, item) => acc + item.qty, 0)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Subtotal</span>
+                  <span>
+                    $
                     {cartItems
                       .reduce((acc, item) => acc + item.qty * item.price, 0)
                       .toFixed(2)}
-                  </div>
-
-                  <button
-                    className="bg-pink-500 mt-4 py-2 px-4 rounded-full text-lg w-full"
-                    disabled={cartItems.length === 0}
-                    onClick={checkoutHandler}
-                  >
-                    Proceed To Checkout
-                  </button>
+                  </span>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4 text-sm leading-7 text-stone-400">
+                  Fresh-roasted beans and brewing gear selected for your next setup refresh.
                 </div>
               </div>
+
+              <button
+                className="mt-6 w-full rounded-full bg-primary px-4 py-3 text-lg font-semibold text-stone-950 transition hover:bg-[#dfa15d]"
+                disabled={cartItems.length === 0}
+                onClick={checkoutHandler}
+              >
+                Proceed to checkout
+              </button>
             </div>
           </>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

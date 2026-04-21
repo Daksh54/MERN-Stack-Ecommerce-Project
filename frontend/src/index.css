@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,47 +6,73 @@
 
 @layer base {
   :root {
-    --background: #0f172a; /* Slate 900 */
-    --foreground: #f8fafc; /* Slate 50 */
-    
-    --primary: #8b5cf6; /* Violet 500 */
+    --background: #0f0a08;
+    --foreground: #f8f0e3;
+    --primary: #d08f49;
     --primary-foreground: #ffffff;
-    
-    --secondary: #1e293b; /* Slate 800 */
-    --secondary-foreground: #e2e8f0;
-    
-    --accent: #ec4899; /* Pink 500 */
-    --accent-foreground: #ffffff;
-    
-    --card: #1e293b; /* Slate 800 */
-    --card-foreground: #f8fafc;
-    
-    --border: #334155; /* Slate 700 */
+    --secondary: #201510;
+    --secondary-foreground: #f3e2cf;
+    --accent: #8e5c36;
+    --accent-foreground: #fff8ef;
+    --card: #18110d;
+    --card-foreground: #f8f0e3;
+    --border: #3b2a1d;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+    font-size: 0.9rem;
+    background-image:
+      radial-gradient(circle at top left, rgba(208, 143, 73, 0.18), transparent 32%),
+      radial-gradient(circle at top right, rgba(110, 68, 40, 0.14), transparent 30%),
+      linear-gradient(180deg, #120c09 0%, #0b0706 100%);
     min-height: 100vh;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-tight;
+  * {
+    scrollbar-color: rgba(208, 143, 73, 0.5) rgba(255, 255, 255, 0.05);
+  }
+
+  h1 { @apply text-4xl font-heading tracking-tight; }
+  h2 { @apply text-3xl font-heading tracking-tight; }
+  h3 { @apply text-2xl font-heading tracking-tight; }
+  h4 { @apply text-xl font-heading tracking-tight; }
+  h5 { @apply text-lg font-heading tracking-tight; }
+  h6 { @apply text-base font-heading tracking-tight; }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  input,
+  textarea,
+  select {
+    color: #fff7ed;
+  }
+
+  ::selection {
+    background: rgba(208, 143, 73, 0.35);
+    color: #fff8ef;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply backdrop-blur-md bg-white/5 border border-white/10 shadow-lg;
+    @apply border border-white/10 bg-white/5 shadow-lg backdrop-blur-md;
   }
-}
 
-body {
-  background: #0f0f10;
-  color: #fff;
-}
+  .coffee-panel {
+    @apply rounded-[2rem] border border-white/10 bg-[#18110d]/90 shadow-[0_18px_60px_rgba(0,0,0,0.28)];
+  }
 
-input,
-textarea {
-  color: #000;
+  .grain-surface {
+    background-image:
+      linear-gradient(180deg, rgba(255, 248, 239, 0.02), rgba(255, 248, 239, 0)),
+      radial-gradient(circle at 20% 20%, rgba(208, 143, 73, 0.12), transparent 22%),
+      radial-gradient(circle at 80% 10%, rgba(121, 73, 41, 0.12), transparent 24%);
+  }
+
+  .eyebrow {
+    @apply text-xs uppercase tracking-[0.34em] text-amber-200/75;
+  }
 }
