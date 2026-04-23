@@ -1,7 +1,7 @@
 import User from "../models/userModel.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import bcrypt from "bcryptjs";
-import createToken from "../utils/createToken.js";
+import createToken, { getCookieOptions } from "../utils/createToken.js";
 import {
   normalizeUserCoffeeProfile,
   normalizeUserSubscription,
@@ -92,9 +92,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const logoutCurrentUser = asyncHandler(async (req, res) => {
   res.cookie("jwt", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV !== "development",
-    sameSite: "strict",
+    ...getCookieOptions(),
     path: "/",
     expires: new Date(0),
   });
