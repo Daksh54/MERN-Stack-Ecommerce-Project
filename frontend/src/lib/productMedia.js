@@ -260,13 +260,16 @@ const buildProductSvg = (product = {}) => {
   };
 };
 
-const isLocalOrGeneratedImage = (value = "") =>
-  value.startsWith("/") || value.startsWith("data:") || value.startsWith("blob:");
+const isRenderableImage = (value = "") =>
+  /^https?:\/\//.test(value) ||
+  value.startsWith("/") ||
+  value.startsWith("data:") ||
+  value.startsWith("blob:");
 
 const getProductImageSource = (product = {}, options = {}) => {
   const { preferUploaded = false } = options;
 
-  if (preferUploaded && product.image && isLocalOrGeneratedImage(product.image)) {
+  if (preferUploaded && product.image && isRenderableImage(product.image)) {
     return product.image;
   }
 

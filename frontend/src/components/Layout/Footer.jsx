@@ -1,94 +1,44 @@
 import { Link } from "react-router-dom";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="relative z-10 mt-auto border-t border-white/10 bg-[#120c09]/90 py-14 text-secondary-foreground">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          <div className="space-y-4">
-            <div className="eyebrow">Roastery Since 2018</div>
-            <h3 className="text-3xl font-heading text-white">RoastFlow Roastery</h3>
-            <p className="text-sm text-stone-400">
-              A coffee-first storefront for single-origin beans, espresso hardware, brew
-              education, and AI-guided product matching.
-            </p>
-          </div>
+    <footer className="relative z-10 mt-auto border-t border-[#e2d4c5] bg-[#f3e7db]">
+      <div className="container mx-auto grid gap-10 px-4 py-14 md:grid-cols-4">
+        <div>
+          <div className="text-xs uppercase tracking-[0.35em] text-[#9a7b62]">Morrow & Bean</div>
+          <h3 className="mt-4 text-3xl text-[#2f2218]">A softer online coffee shop.</h3>
+          <p className="mt-4 text-sm leading-7 text-[#6d5747]">
+            Carefully chosen beans, espresso machines, and brew tools for coffee drinkers who care
+            about the whole ritual.
+          </p>
+        </div>
 
-          <div>
-            <h4 className="mb-4 font-bold text-white">Collections</h4>
-            <ul className="space-y-2 text-sm text-stone-400">
-              <li>
-                <Link to="/shop" className="transition-colors hover:text-primary">
-                  Arabica Roasts
-                </Link>
-              </li>
-              <li>
-                <Link to="/shop" className="transition-colors hover:text-primary">
-                  Robusta Lots
-                </Link>
-              </li>
-              <li>
-                <Link to="/shop" className="transition-colors hover:text-primary">
-                  Espresso Machines
-                </Link>
-              </li>
-              <li>
-                <Link to="/shop" className="transition-colors hover:text-primary">
-                  AeroPress & Manual Brew Gear
-                </Link>
-              </li>
-            </ul>
+        <div>
+          <h4 className="text-lg font-semibold text-[#2f2218]">Shop</h4>
+          <div className="mt-4 grid gap-2 text-sm text-[#6d5747]">
+            <Link to="/shop?collection=coffee-beans">Coffee Beans</Link>
+            <Link to="/shop?collection=machines">Machines</Link>
+            <Link to="/shop?collection=brew-tools">Brew Tools</Link>
+            <Link to="/shop?collection=subscriptions">Subscriptions & Gifts</Link>
           </div>
+        </div>
 
-          <div>
-            <h4 className="mb-4 font-bold text-white">Experience</h4>
-            <ul className="space-y-2 text-sm text-stone-400">
-              <li>
-                <Link to="/shop" className="transition-colors hover:text-primary">
-                  Roast Concierge
-                </Link>
-              </li>
-              <li>
-                <Link to="/profile" className="transition-colors hover:text-primary">
-                  Flavor Profile
-                </Link>
-              </li>
-              <li>
-                <Link to="/shop" className="transition-colors hover:text-primary">
-                  Brew Guides
-                </Link>
-              </li>
-              <li>
-                <Link to="/profile" className="transition-colors hover:text-primary">
-                  Smart Subscription
-                </Link>
-              </li>
-            </ul>
+        <div>
+          <h4 className="text-lg font-semibold text-[#2f2218]">Help</h4>
+          <div className="mt-4 grid gap-2 text-sm text-[#6d5747]">
+            <Link to="/about">About the brand</Link>
+            <Link to="/faq">FAQ & Shipping</Link>
+            <Link to="/contact">Contact</Link>
+            <Link to="/cart">Shopping cart</Link>
           </div>
+        </div>
 
-          <div>
-            <h4 className="mb-4 font-bold text-white">Stay Connected</h4>
-            <p className="mb-4 text-sm text-stone-400">
-              Weekly roast drops, brew experiments, and early access to limited equipment bundles.
-            </p>
-            <div className="mb-4 flex space-x-4">
-              <a href="#" className="rounded-full bg-white/5 p-2 text-white transition-colors hover:bg-primary hover:text-stone-950">
-                <FaFacebook />
-              </a>
-              <a href="#" className="rounded-full bg-white/5 p-2 text-white transition-colors hover:bg-primary hover:text-stone-950">
-                <FaTwitter />
-              </a>
-              <a href="#" className="rounded-full bg-white/5 p-2 text-white transition-colors hover:bg-primary hover:text-stone-950">
-                <FaInstagram />
-              </a>
-              <a href="#" className="rounded-full bg-white/5 p-2 text-white transition-colors hover:bg-primary hover:text-stone-950">
-                <FaLinkedin />
-              </a>
-            </div>
-            <p className="text-xs text-stone-500">
-              © {new Date().getFullYear()} RoastFlow Roastery. Crafted for curious coffee drinkers.
-            </p>
+        <div>
+          <h4 className="text-lg font-semibold text-[#2f2218]">Visit</h4>
+          <div className="mt-4 space-y-3 text-sm leading-7 text-[#6d5747]">
+            <p>415 Market Street, San Francisco, CA</p>
+            <p>hello@morrowandbean.com</p>
+            <p>Mon to Sat, 8:00 AM to 6:00 PM</p>
           </div>
         </div>
       </div>

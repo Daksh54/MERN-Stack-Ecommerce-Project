@@ -149,6 +149,18 @@ const AdminDashboard = () => {
               {intelligenceData?.summary?.pendingSubscriptionReminders || 0}
             </h2>
           </div>
+          <div className="w-[20rem] rounded-lg border border-white/10 bg-[#120d09] p-5">
+            <p className="text-sm text-stone-400">Open exchange orders</p>
+            <h2 className="mt-3 text-3xl font-bold text-white">
+              {intelligenceData?.summary?.openLimitOrders || 0}
+            </h2>
+          </div>
+          <div className="w-[20rem] rounded-lg border border-white/10 bg-[#120d09] p-5">
+            <p className="text-sm text-stone-400">Pending roast tickets</p>
+            <h2 className="mt-3 text-3xl font-bold text-white">
+              {intelligenceData?.summary?.pendingRoastOrders || 0}
+            </h2>
+          </div>
           <button
             type="button"
             onClick={triggerPricingEngine}
@@ -204,6 +216,58 @@ const AdminDashboard = () => {
                   <div className="mt-1 text-sm text-stone-400">
                     Reminder at {new Date(job.runAt).toLocaleString()} | cart size {job.cartSize}
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-[4rem] grid gap-6 xl:grid-cols-2">
+          <div className="rounded-3xl border border-white/10 bg-[#120d09] p-6">
+            <h3 className="text-xl font-semibold text-white">Predictive roast queue</h3>
+            <div className="mt-4 space-y-3">
+              {(intelligenceData?.roastOrders || []).map((ticket) => (
+                <div
+                  key={ticket._id}
+                  className="rounded-2xl border border-white/10 bg-black/20 p-4"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="font-semibold text-white">{ticket.name}</div>
+                      <div className="mt-1 text-sm text-stone-400">
+                        Batch {ticket.batchSizeKg}kg · Bin {ticket.warehouseBin}
+                      </div>
+                      <div className="mt-1 text-sm text-stone-400">
+                        Roast at {new Date(ticket.targetRoastAt).toLocaleString()}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm uppercase tracking-[0.2em] text-amber-200">
+                        {ticket.priority}
+                      </div>
+                      <div className="mt-2 text-sm text-stone-400">
+                        Stock {ticket.currentStock} / Demand {Math.round(ticket.forecastDemand || 0)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-white/10 bg-[#120d09] p-6">
+            <h3 className="text-xl font-semibold text-white">Freshness alerts</h3>
+            <div className="mt-4 space-y-3">
+              {(intelligenceData?.freshnessAlerts || []).map((entry) => (
+                <div
+                  key={entry._id}
+                  className="rounded-2xl border border-white/10 bg-black/20 p-4"
+                >
+                  <div className="font-semibold text-white">{entry.name}</div>
+                  <div className="mt-1 text-sm text-stone-400">
+                    {entry.ageDays} days off roast · freshness {entry.freshnessPct}%
+                  </div>
+                  <div className="mt-1 text-sm text-amber-200">{entry.warehouseBin}</div>
                 </div>
               ))}
             </div>

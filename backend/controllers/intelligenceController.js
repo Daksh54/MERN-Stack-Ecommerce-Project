@@ -1,8 +1,17 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/productModel.js";
+import LimitOrder from "../models/limitOrderModel.js";
 import { refreshDynamicPricing, upsertDailySignal } from "../services/pricingEngineService.js";
 import { getPersonalizedRecommendations } from "../services/recommendationService.js";
 import { getConciergeResponse } from "../services/conciergeService.js";
+import { createCustomRoastSku } from "../services/customRoastService.js";
+import { getUserLimitOrders, placeLimitOrder } from "../services/exchangeService.js";
+import { attachMarketStream } from "../services/marketStreamService.js";
+import {
+  getBlindTastingChallenge,
+  submitBlindTastingFeedback,
+} from "../services/blindTastingService.js";
+import { getRoastOperationsSnapshot } from "../services/roastOperationsService.js";
 import {
   getSmartSubscriptionPlan,
   getSubscriptionQueueSnapshot,
@@ -46,7 +55,40 @@ const getPricingInsight = asyncHandler(async (req, res) => {
     throw new Error("Product not found");
   }
 
-  res.json(product.pricing?.lastRecommendation || {});
+  const openLimitOrders = await LimitOrder.countDocuments({
+    product: product._id,
+    status: "open",
+  });
+
+  res.json({
+    ...(product.pricing?.lastRecommendation || {}),
+    currentPrice: product.price,
+    basePrice: product.pricing?.basePrice || product.price,
+    priceFloor: product.pricing?.priceFloor || product.price,
+    priceCeiling: product.pricing?.priceCeiling || product.price,
+    flashSaleEndsAt: product.pricing?.flashSaleEndsAt || null,
+    openLimitOrders,
+  });
+});
+
+const streamMarketEvents = asyncHandler(async (req, res) => {
+  attachMarketStream(req, res);
+});
+
+const submitLimitOrder = asyncHandler(async (req, res) => {
+  const order = await placeLimitOrder({
+    userId: req.user._id,
+    productId: req.params.id,
+    targetPrice: req.body?.targetPrice,
+    qty: req.body?.qty || 1,
+  });
+
+  res.status(201).json(order);
+});
+
+const getMyLimitOrders = asyncHandler(async (req, res) => {
+  const orders = await getUserLimitOrders(req.user._id);
+  res.json(orders);
 });
 
 const chatWithConcierge = asyncHandler(async (req, res) => {
@@ -64,6 +106,32 @@ const chatWithConcierge = asyncHandler(async (req, res) => {
   });
 
   res.json(response);
+});
+
+const createCustomRoast = asyncHandler(async (req, res) => {
+  const { temperatureC, durationSeconds } = req.body || {};
+  const product = await createCustomRoastSku({
+    productId: req.params.id,
+    temperatureC: Number(temperatureC || 205),
+    durationSeconds: Number(durationSeconds || 630),
+    userId: req.user?._id,
+  });
+
+  res.status(201).json(product);
+});
+
+const getBlindTastingFlight = asyncHandler(async (req, res) => {
+  const challenge = await getBlindTastingChallenge();
+  res.json(challenge);
+});
+
+const submitBlindTastingFlight = asyncHandler(async (req, res) => {
+  const result = await submitBlindTastingFeedback({
+    user: req.user,
+    entries: Array.isArray(req.body?.entries) ? req.body.entries : [],
+  });
+
+  res.status(201).json(result);
 });
 
 const getSubscriptionPlan = asyncHandler(async (req, res) => {
@@ -88,6 +156,8 @@ const getAdminIntelligenceDashboard = asyncHandler(async (req, res) => {
     .sort({ "pricing.lastRecommendation.generatedAt": -1 })
     .limit(8);
   const queueSnapshot = await getSubscriptionQueueSnapshot();
+  const roastOps = await getRoastOperationsSnapshot();
+  const openLimitOrders = await LimitOrder.countDocuments({ status: "open" });
 
   res.json({
     pricingCandidates: pricingCandidates.map((product) => ({
@@ -99,20 +169,30 @@ const getAdminIntelligenceDashboard = asyncHandler(async (req, res) => {
       flashSaleEndsAt: product.pricing.flashSaleEndsAt,
     })),
     subscriptionQueue: queueSnapshot,
+    roastOrders: roastOps.roastOrders,
+    freshnessAlerts: roastOps.freshnessAlerts,
     summary: {
       activeFlashSales: pricingCandidates.filter((product) => product.pricing.flashSaleEndsAt)
         .length,
       pendingSubscriptionReminders: queueSnapshot.length,
+      openLimitOrders,
+      pendingRoastOrders: roastOps.roastOrders.length,
     },
   });
 });
 
 export {
   getAdminIntelligenceDashboard,
+  getBlindTastingFlight,
+  getMyLimitOrders,
   getPersonalizedMatches,
   getPricingInsight,
   chatWithConcierge,
+  createCustomRoast,
   getSubscriptionPlan,
+  streamMarketEvents,
+  submitBlindTastingFlight,
+  submitLimitOrder,
   runPricingEngine,
   trackProductView,
 };

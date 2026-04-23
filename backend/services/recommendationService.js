@@ -127,7 +127,9 @@ const requestRemoteRecommendations = async (user, inventory) => {
 };
 
 const getPersonalizedRecommendations = async (user, limit = 6) => {
-  const inventory = await Product.find({}).sort({ rating: -1, createdAt: -1 }).limit(30);
+  const inventory = await Product.find({ isCustomProduct: { $ne: true } })
+    .sort({ rating: -1, createdAt: -1 })
+    .limit(30);
   const remote = await requestRemoteRecommendations(user, inventory);
 
   if (remote?.recommendations?.length) {

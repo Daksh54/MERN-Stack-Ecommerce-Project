@@ -19,6 +19,14 @@ export const intelligenceApiSlice = apiSlice.injectEndpoints({
       query: () => `${INTELLIGENCE_URL}/dashboard`,
       keepUnusedDataFor: 30,
     }),
+    getMyLimitOrders: builder.query({
+      query: () => `${INTELLIGENCE_URL}/limit-orders/me`,
+      keepUnusedDataFor: 15,
+    }),
+    getBlindTastingChallenge: builder.query({
+      query: () => `${INTELLIGENCE_URL}/blind-tasting/challenge`,
+      keepUnusedDataFor: 15,
+    }),
     runPricingEngine: builder.mutation({
       query: (payload = { persistPrice: true }) => ({
         url: `${INTELLIGENCE_URL}/pricing/run`,
@@ -33,14 +41,40 @@ export const intelligenceApiSlice = apiSlice.injectEndpoints({
         body: payload,
       }),
     }),
+    placeLimitOrder: builder.mutation({
+      query: ({ productId, ...payload }) => ({
+        url: `${INTELLIGENCE_URL}/products/${productId}/limit-orders`,
+        method: "POST",
+        body: payload,
+      }),
+    }),
+    createCustomRoast: builder.mutation({
+      query: ({ productId, ...payload }) => ({
+        url: `${INTELLIGENCE_URL}/products/${productId}/custom-roast`,
+        method: "POST",
+        body: payload,
+      }),
+    }),
+    submitBlindTastingFlight: builder.mutation({
+      query: (payload) => ({
+        url: `${INTELLIGENCE_URL}/blind-tasting/submit`,
+        method: "POST",
+        body: payload,
+      }),
+    }),
   }),
 });
 
 export const {
   useConciergeChatMutation,
+  useCreateCustomRoastMutation,
   useGetIntelligenceDashboardQuery,
+  useGetBlindTastingChallengeQuery,
+  useGetMyLimitOrdersQuery,
   useGetPersonalizedRecommendationsQuery,
   useGetPricingInsightQuery,
   useGetSubscriptionPlanQuery,
+  usePlaceLimitOrderMutation,
   useRunPricingEngineMutation,
+  useSubmitBlindTastingFlightMutation,
 } = intelligenceApiSlice;

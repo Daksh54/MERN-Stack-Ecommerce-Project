@@ -1,4 +1,7 @@
 import Product from "../models/productModel.js";
+import { evaluateLimitOrdersForProduct } from "./exchangeService.js";
+import { broadcastMarketEvent } from "./marketStreamService.js";
+import { queueRoastOrderReview } from "./roastOperationsService.js";
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const average = (values) =>
@@ -173,11 +176,26 @@ const applyPricingRecommendation = async (product, { persistPrice = false } = {}
   }
 
   await product.save();
+  await evaluateLimitOrdersForProduct(product);
+  await queueRoastOrderReview(product, recommendation);
+  broadcastMarketEvent("price-update", {
+    productId: product._id,
+    name: product.name,
+    currentPrice: product.price,
+    recommendedPrice: recommendation.recommendedPrice,
+    priceChangePct: recommendation.priceChangePct,
+    forecastDemand: recommendation.forecastDemand,
+    priceFloor: product.pricing?.priceFloor,
+    priceCeiling: product.pricing?.priceCeiling,
+    flashSaleEndsAt: recommendation.flashSaleEndsAt,
+  });
   return recommendation;
 };
 
 const refreshDynamicPricing = async ({ productIds = [], persistPrice = true } = {}) => {
-  const query = productIds.length ? { _id: { $in: productIds } } : {};
+  const query = productIds.length
+    ? { _id: { $in: productIds }, isCustomProduct: { $ne: true } }
+    : { isCustomProduct: { $ne: true } };
   const products = await Product.find(query);
   const results = [];
 

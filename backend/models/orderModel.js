@@ -108,6 +108,25 @@ const orderSchema = mongoose.Schema(
         default: [],
       },
     },
+    source: {
+      type: String,
+      default: "checkout",
+      enum: ["checkout", "limit-order"],
+    },
+    exchangeExecution: {
+      limitOrder: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "LimitOrder",
+      },
+      targetPrice: Number,
+      executedPrice: Number,
+      reservedInventory: { type: Boolean, default: false },
+      status: {
+        type: String,
+        default: "none",
+        enum: ["none", "reserved", "settled"],
+      },
+    },
   },
   {
     timestamps: true,

@@ -6,26 +6,26 @@
 
 @layer base {
   :root {
-    --background: #0f0a08;
-    --foreground: #f8f0e3;
-    --primary: #d08f49;
+    --background: #f7f0e7;
+    --foreground: #2f2218;
+    --primary: #8b6343;
     --primary-foreground: #ffffff;
-    --secondary: #201510;
-    --secondary-foreground: #f3e2cf;
-    --accent: #8e5c36;
-    --accent-foreground: #fff8ef;
-    --card: #18110d;
-    --card-foreground: #f8f0e3;
-    --border: #3b2a1d;
+    --secondary: #f1e5d8;
+    --secondary-foreground: #5f4b3c;
+    --accent: #c9ab8d;
+    --accent-foreground: #2f2218;
+    --card: #fbf7f1;
+    --card-foreground: #2f2218;
+    --border: #dbcbb8;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-size: 0.9rem;
     background-image:
-      radial-gradient(circle at top left, rgba(208, 143, 73, 0.18), transparent 32%),
-      radial-gradient(circle at top right, rgba(110, 68, 40, 0.14), transparent 30%),
-      linear-gradient(180deg, #120c09 0%, #0b0706 100%);
+      radial-gradient(circle at top left, rgba(187, 144, 105, 0.18), transparent 30%),
+      radial-gradient(circle at top right, rgba(140, 112, 85, 0.1), transparent 28%),
+      linear-gradient(180deg, #faf5ef 0%, #f4ebe1 100%);
     min-height: 100vh;
   }
 
@@ -47,7 +47,7 @@
   input,
   textarea,
   select {
-    color: #fff7ed;
+    color: #2f2218;
   }
 
   ::selection {

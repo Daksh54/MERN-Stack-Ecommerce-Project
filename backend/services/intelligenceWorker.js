@@ -1,9 +1,11 @@
 import Job from "../models/jobModel.js";
 import { refreshDynamicPricing } from "./pricingEngineService.js";
+import { createRoastOrderFromPayload } from "./roastOperationsService.js";
 import { markSubscriptionJobDelivered } from "./subscriptionService.js";
 
 let workerHandle;
 let workerRunning = false;
+let lastMarketSweepAt = 0;
 
 const processJob = async (job) => {
   if (job.type === "smart-subscription-reminder") {
@@ -15,6 +17,10 @@ const processJob = async (job) => {
       productIds: job.payload.productIds || [],
       persistPrice: true,
     });
+  }
+
+  if (job.type === "roast-order-generation") {
+    await createRoastOrderFromPayload(job.payload);
   }
 };
 
@@ -50,6 +56,12 @@ const tick = async () => {
         job.lastError = error.message;
         await job.save();
       }
+    }
+
+    const sweepIntervalMs = Number(process.env.MARKET_SWEEP_INTERVAL_MS || 5 * 60 * 1000);
+    if (Date.now() - lastMarketSweepAt >= sweepIntervalMs) {
+      await refreshDynamicPricing({ persistPrice: true });
+      lastMarketSweepAt = Date.now();
     }
   } finally {
     workerRunning = false;

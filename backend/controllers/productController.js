@@ -89,8 +89,9 @@ const fetchProducts = asyncHandler(async (req, res) => {
         }
       : {};
 
-    const count = await Product.countDocuments({ ...keyword });
-    const products = await Product.find({ ...keyword })
+    const visibilityQuery = { isCustomProduct: { $ne: true } };
+    const count = await Product.countDocuments({ ...visibilityQuery, ...keyword });
+    const products = await Product.find({ ...visibilityQuery, ...keyword })
       .sort({ "pricing.lastRecommendation.demandScore": -1, createdAt: -1 })
       .limit(pageSize);
 
@@ -123,7 +124,7 @@ const fetchProductById = asyncHandler(async (req, res) => {
 
 const fetchAllProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find({})
+    const products = await Product.find({ isCustomProduct: { $ne: true } })
       .populate("category")
       .limit(12)
       .sort({ createdAt: -1 });
@@ -179,7 +180,9 @@ const addProductReview = asyncHandler(async (req, res) => {
 
 const fetchTopProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find({}).sort({ rating: -1 }).limit(4);
+    const products = await Product.find({ isCustomProduct: { $ne: true } })
+      .sort({ rating: -1 })
+      .limit(4);
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -189,7 +192,9 @@ const fetchTopProducts = asyncHandler(async (req, res) => {
 
 const fetchNewProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find().sort({ _id: -1 }).limit(5);
+    const products = await Product.find({ isCustomProduct: { $ne: true } })
+      .sort({ _id: -1 })
+      .limit(5);
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -205,7 +210,7 @@ const filterProducts = asyncHandler(async (req, res) => {
     if (checked.length > 0) args.category = checked;
     if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] };
 
-    const products = await Product.find(args);
+    const products = await Product.find({ ...args, isCustomProduct: { $ne: true } });
     res.json(products);
   } catch (error) {
     console.error(error);

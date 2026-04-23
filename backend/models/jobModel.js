@@ -5,7 +5,11 @@ const jobSchema = mongoose.Schema(
     type: {
       type: String,
       required: true,
-      enum: ["smart-subscription-reminder", "dynamic-pricing-refresh"],
+      enum: [
+        "smart-subscription-reminder",
+        "dynamic-pricing-refresh",
+        "roast-order-generation",
+      ],
     },
     status: {
       type: String,

@@ -178,6 +178,7 @@ const markOrderAsPaid = async (req, res) => {
 
       if (!wasAlreadyPaid) {
         const productIds = [];
+        const inventoryAlreadyReserved = Boolean(order.exchangeExecution?.reservedInventory);
 
         for (const item of order.orderItems) {
           const product = await Product.findById(item.product);
@@ -186,7 +187,9 @@ const markOrderAsPaid = async (req, res) => {
             continue;
           }
 
-          product.countInStock = Math.max(0, product.countInStock - item.qty);
+          if (!inventoryAlreadyReserved) {
+            product.countInStock = Math.max(0, product.countInStock - item.qty);
+          }
           product.quantity += item.qty;
           product.analytics.totalUnitsSold += item.qty;
           product.analytics.lastPurchasedAt = new Date();
@@ -200,6 +203,12 @@ const markOrderAsPaid = async (req, res) => {
 
         if (productIds.length) {
           await refreshDynamicPricing({ productIds, persistPrice: true });
+        }
+
+        if (inventoryAlreadyReserved) {
+          order.exchangeExecution.status = "settled";
+          await order.save();
+          updateOrder.exchangeExecution = order.exchangeExecution;
         }
 
         await scheduleSmartSubscriptionForOrder(order.user, order._id);

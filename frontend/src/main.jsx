@@ -26,6 +26,9 @@ import UserOrder from "./pages/User/UserOrder";
 import Home from "./pages/Home.jsx";
 import Favorites from "./pages/Products/Favorites.jsx";
 import ProductDetails from "./pages/Products/ProductDetails.jsx";
+import About from "./pages/About.jsx";
+import FaqShipping from "./pages/FaqShipping.jsx";
+import Contact from "./pages/Contact.jsx";
 
 import Cart from "./pages/Cart.jsx";
 import Shop from "./pages/Shop.jsx";
@@ -47,12 +50,17 @@ const router = createBrowserRouter(
       <Route path="/product/:id" element={<ProductDetails />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/shop" element={<Shop />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/faq" element={<FaqShipping />} />
+      <Route path="/contact" element={<Contact />} />
 
       {/* Registered users */}
       <Route path="" element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />} />
         <Route path="/shipping" element={<Shipping />} />
         <Route path="/placeorder" element={<PlaceOrder />} />
+        <Route path="/checkout" element={<Shipping />} />
+        <Route path="/checkout/payment" element={<PlaceOrder />} />
         <Route path="/order/:id" element={<Order />} />
         <Route path="/user-orders" element={<UserOrder />} />
       </Route>

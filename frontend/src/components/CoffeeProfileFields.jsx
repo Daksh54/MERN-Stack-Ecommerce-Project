@@ -22,8 +22,8 @@ const CheckboxGrid = ({ items, selected, onToggle }) => (
         onClick={() => onToggle(item)}
         className={`rounded-full border px-3 py-2 text-sm capitalize transition ${
           selected.includes(item)
-            ? "border-amber-400 bg-amber-500/15 text-amber-100"
-            : "border-white/10 bg-white/5 text-gray-300"
+            ? "border-[#8b6343] bg-[#f3e7db] text-[#2f2218]"
+            : "border-[#dbcbb8] bg-white text-[#6d5747]"
         }`}
       >
         {item}
@@ -43,16 +43,16 @@ const CoffeeProfileFields = ({
   };
 
   return (
-    <div className="space-y-6 rounded-3xl border border-white/10 bg-[#130d09] p-5">
+    <div className="space-y-6 rounded-[1.8rem] border border-[#ddcfbf] bg-[#fbf7f1] p-6">
       <div>
-        <h3 className="text-lg font-semibold text-white">Flavor Profile</h3>
-        <p className="mt-1 text-sm text-stone-400">
+        <div className="text-xs uppercase tracking-[0.35em] text-[#9a7b62]">Flavor Profile</div>
+        <p className="mt-2 text-sm leading-7 text-[#6d5747]">
           These preferences drive the flavor matcher, predictive pricing, and smart replenishment.
         </p>
       </div>
 
       <div className="space-y-3">
-        <label className="block text-sm font-medium text-stone-200">Brewing Methods</label>
+        <label className="block text-sm font-medium text-[#5f4b3c]">Brewing Methods</label>
         <CheckboxGrid
           items={brewingOptions}
           selected={coffeeProfile.brewingMethods}
@@ -64,11 +64,11 @@ const CoffeeProfileFields = ({
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-medium text-stone-200">Roast Preference</label>
+          <label className="mb-2 block text-sm font-medium text-[#5f4b3c]">Roast Preference</label>
           <select
             value={coffeeProfile.roastPreference}
             onChange={(event) => updateProfile("roastPreference", event.target.value)}
-            className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white"
+            className="w-full rounded-[1.1rem] border border-[#dbcbb8] bg-white px-4 py-3 text-[#2f2218] outline-none transition focus:border-[#9d7552]"
           >
             <option value="light">Light</option>
             <option value="medium-light">Medium Light</option>
@@ -79,20 +79,20 @@ const CoffeeProfileFields = ({
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-stone-200">Bean Preference</label>
+          <label className="mb-2 block text-sm font-medium text-[#5f4b3c]">Bean Preference</label>
           <input
             type="text"
             value={coffeeProfile.beanPreference}
             onChange={(event) => updateProfile("beanPreference", event.target.value)}
             placeholder="single-origin arabica"
-            className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white"
+            className="w-full rounded-[1.1rem] border border-[#dbcbb8] bg-white px-4 py-3 text-[#2f2218] outline-none transition focus:border-[#9d7552]"
           />
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-medium text-stone-200">
+          <label className="mb-2 block text-sm font-medium text-[#5f4b3c]">
             Acidity Tolerance: {coffeeProfile.acidityTolerance}
           </label>
           <input
@@ -102,25 +102,25 @@ const CoffeeProfileFields = ({
             step="1"
             value={coffeeProfile.acidityTolerance}
             onChange={(event) => updateProfile("acidityTolerance", Number(event.target.value))}
-            className="w-full accent-amber-400"
+            className="w-full accent-[#8b6343]"
           />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-stone-200">Daily Cups</label>
+          <label className="mb-2 block text-sm font-medium text-[#5f4b3c]">Daily Cups</label>
           <input
             type="number"
             min="1"
             max="12"
             value={coffeeProfile.dailyCups}
             onChange={(event) => updateProfile("dailyCups", Number(event.target.value))}
-            className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white"
+            className="w-full rounded-[1.1rem] border border-[#dbcbb8] bg-white px-4 py-3 text-[#2f2218] outline-none transition focus:border-[#9d7552]"
           />
         </div>
       </div>
 
       <div className="space-y-3">
-        <label className="block text-sm font-medium text-stone-200">Favorite Flavor Notes</label>
+        <label className="block text-sm font-medium text-[#5f4b3c]">Favorite Flavor Notes</label>
         <CheckboxGrid
           items={noteOptions}
           selected={coffeeProfile.flavorNotes}
@@ -131,7 +131,7 @@ const CoffeeProfileFields = ({
       </div>
 
       <div className="space-y-3">
-        <label className="block text-sm font-medium text-stone-200">Preferred Origins</label>
+        <label className="block text-sm font-medium text-[#5f4b3c]">Preferred Origins</label>
         <CheckboxGrid
           items={originOptions}
           selected={coffeeProfile.preferredOrigins}
@@ -141,15 +141,15 @@ const CoffeeProfileFields = ({
         />
       </div>
 
-      <div className="rounded-2xl border border-emerald-400/15 bg-emerald-500/5 p-4">
-        <div className="flex items-center justify-between gap-4">
+      <div className="rounded-[1.5rem] border border-[#ddcfbf] bg-[#f3e7db] p-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h4 className="font-semibold text-white">Smart Subscription</h4>
-            <p className="mt-1 text-sm text-stone-400">
+            <h4 className="font-semibold text-[#2f2218]">Smart Subscription</h4>
+            <p className="mt-1 text-sm leading-7 text-[#6d5747]">
               Predict when you’ll run out and queue a replenishment reminder automatically.
             </p>
           </div>
-          <label className="inline-flex items-center gap-2 text-sm text-white">
+          <label className="inline-flex items-center gap-2 text-sm font-medium text-[#5f4b3c]">
             <input
               type="checkbox"
               checked={smartSubscription.enabled}
@@ -159,13 +159,14 @@ const CoffeeProfileFields = ({
                   enabled: event.target.checked,
                 })
               }
+              className="h-4 w-4 accent-[#8b6343]"
             />
             Enabled
           </label>
         </div>
 
         <div className="mt-4">
-          <label className="mb-2 block text-sm font-medium text-stone-200">
+          <label className="mb-2 block text-sm font-medium text-[#5f4b3c]">
             Reminder lead time: {smartSubscription.reminderLeadDays} days
           </label>
           <input
@@ -180,7 +181,7 @@ const CoffeeProfileFields = ({
                 reminderLeadDays: Number(event.target.value),
               })
             }
-            className="w-full accent-emerald-400"
+            className="w-full accent-[#8b6343]"
           />
         </div>
       </div>

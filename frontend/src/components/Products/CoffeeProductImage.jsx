@@ -5,7 +5,7 @@ const CoffeeProductImage = ({
   alt,
   className = "",
   imageClassName = "",
-  preferUploaded = false,
+  preferUploaded = true,
 }) => {
   const src = getProductImageSource(product, { preferUploaded });
 
