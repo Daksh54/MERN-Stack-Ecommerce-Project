@@ -23,12 +23,40 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 const __dirname = path.resolve();
-const allowedOrigins = (process.env.ALLOWED_ORIGINS ||
+const configuredOrigins = (
+  process.env.ALLOWED_ORIGINS ||
   process.env.CLIENT_URL ||
-  "http://localhost:5173,http://127.0.0.1:5173")
+  "http://localhost:5173,http://127.0.0.1:5173"
+)
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
+
+const normalizeOrigin = (origin = "") => origin.replace(/\/$/, "");
+
+const isAllowedOrigin = (requestOrigin = "") => {
+  const normalizedRequestOrigin = normalizeOrigin(requestOrigin);
+
+  return configuredOrigins.some((origin) => {
+    const normalizedOrigin = normalizeOrigin(origin);
+
+    if (normalizedOrigin === normalizedRequestOrigin) {
+      return true;
+    }
+
+    if (normalizedOrigin.startsWith("https://*.") || normalizedOrigin.startsWith("http://*.")) {
+      const wildcardSuffix = normalizedOrigin.replace("https://*.", ".").replace("http://*.", ".");
+      return normalizedRequestOrigin.endsWith(wildcardSuffix);
+    }
+
+    return false;
+  });
+};
+
+const allowVercelPreviewOrigin =
+  process.env.ALLOW_VERCEL_PREVIEW_ORIGINS === "true" &&
+  /\.vercel\.app$/i.test(normalizeOrigin(process.env.CLIENT_URL || ""));
+
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: Number(process.env.AUTH_RATE_LIMIT_MAX || 20),
@@ -52,7 +80,16 @@ app.use(
       ? `${requestProtocol}://${requestHost}` === requestOrigin
       : false;
 
-    if (!requestOrigin || sameOrigin || allowedOrigins.includes(requestOrigin)) {
+    const normalizedRequestOrigin = normalizeOrigin(requestOrigin || "");
+    const isVercelPreviewOrigin =
+      allowVercelPreviewOrigin && /\.vercel\.app$/i.test(normalizedRequestOrigin);
+
+    if (
+      !requestOrigin ||
+      sameOrigin ||
+      isAllowedOrigin(requestOrigin) ||
+      isVercelPreviewOrigin
+    ) {
       return callback(null, { origin: true, credentials: true });
     }
 
