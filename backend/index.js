@@ -1,5 +1,6 @@
 // packages
 import path from "path";
+import fs from "fs";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
@@ -88,11 +89,15 @@ app.get("/api/config/paypal", (req, res) => {
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "frontend", "dist")));
+const frontendDistPath = path.join(__dirname, "frontend", "dist");
+const shouldServeFrontend =
+  process.env.NODE_ENV === "production" && fs.existsSync(frontendDistPath);
+
+if (shouldServeFrontend) {
+  app.use(express.static(frontendDistPath));
 
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"))
+    res.sendFile(path.resolve(frontendDistPath, "index.html"))
   );
 }
 
